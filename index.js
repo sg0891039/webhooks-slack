@@ -90,7 +90,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
     if (payload.event === 'media.scrobble') {
       action = 'played';
-    } else if {
+    } else if (payload.event === 'library.new') {
       action = 'added';
     } else if (payload.rating > 0) {
       action = 'rated ';
