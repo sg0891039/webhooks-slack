@@ -52,7 +52,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   let image = await redis.getBuffer(key);
 
   // save new image
-  if (payload.event === 'media.play' || payload.event === 'media.rate') {
+  if (payload.event === 'media.play' || payload.event === 'media.rate' || payload.event === 'library.new') {
     if (image) {
       console.log('[REDIS]', `Using cached image ${key}`);
     } else {
@@ -85,7 +85,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   // post to slack
   if ((payload.event === 'media.scrobble' && isVideo) || payload.event === 'media.rate' || payload.event === 'library.new') {
     const location = await getLocation(payload.Player.publicAddress);
-
+    console.log('[SLACK]', `the event is ${payload.event}`);
     let action;
 
     if (payload.event === 'media.scrobble') {
