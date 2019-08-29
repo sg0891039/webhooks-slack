@@ -43,9 +43,9 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   const isAudio = (payload.Metadata.librarySectionType === 'artist');
   const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey);
 
-  console.log('[What is user]', `it is  ${payload.user}`);
+  // console.log('[What is user]', `it is  ${payload.user}`);
   // missing required properties
-  if (!payload.user || !payload.Metadata || !(isAudio || isVideo)) {
+  if (!payload.Metadata || !(isAudio || isVideo)) {
     return res.sendStatus(400);
   }
 
