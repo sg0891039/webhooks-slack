@@ -201,7 +201,7 @@ function notifySlack(imageUrl, payload, location, action) {
     username: 'Plex',
     icon_emoji: ':plex:',
     attachments: [{
-      fallback: `${payload.Account.title} ${action}',
+      fallback: `${payload.Account.title} ${action} ${payload.Metadata.grandparentTitle}`,
       color: '#a67a2d',
       title: formatTitle(payload.Metadata),
       text: formatSubtitle(payload.Metadata),
