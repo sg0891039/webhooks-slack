@@ -86,7 +86,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   // post to slack
   if ((payload.event === 'media.scrobble' && isVideo) || payload.event === 'media.rate' || payload.event === 'library.new') {
-    const location = await getLocation(payload.Player.publicAddress);
+    const location = payload.event === 'library.new' ? null : await getLocation(payload.Player.publicAddress);
     console.log('[SLACK]', `the event is ${payload.event}`);
     let action;
 
