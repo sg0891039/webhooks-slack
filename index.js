@@ -184,6 +184,8 @@ function formatSubtitle(metadata) {
 
 function notifySlack(imageUrl, payload, location, action) {
   let locationText = '';
+  let footerText = '';
+  let titleText = formatTitle(payload.Metadata);
 
   if (location) {
     const state = location.country_code === 'US' ? location.region_name : location.country_name;
@@ -191,18 +193,24 @@ function notifySlack(imageUrl, payload, location, action) {
   } else {
     locationText = payload.Server.title
   }
+  
+  if (payload.event === 'library.new') {
+    footerText =  `to ${payload.Server.title}`;
+  } else {
+    footerText =  `by ${payload.Account.title} on ${payload.Player.title} from ${payload.Server.title} ${locationText}`;
+  }
 
   slack.webhook({
     channel,
     username: 'Plex',
     icon_emoji: ':plex:',
     attachments: [{
-      fallback: `${payload.Account.title} ${action} ${payload.Metadata.grandparentTitle}`,
+      fallback: `${payload.Account.title} ${action} ${titleText}`,
       color: '#a67a2d',
       title: formatTitle(payload.Metadata),
       text: formatSubtitle(payload.Metadata),
       thumb_url: imageUrl,
-      footer: `${action} by ${payload.Account.title} on ${payload.Player.title} from ${payload.Server.title} ${locationText}`,
+      footer: `${action} ${footerText}`,
       footer_icon: payload.Account.thumb
     }]
   }, () => {});
