@@ -186,6 +186,7 @@ function notifySlack(imageUrl, payload, location, action) {
   let locationText = '';
   let footerText = '';
   let titleText = formatTitle(payload.Metadata);
+  let subtitleText = formatSubtitle(payload.Metadata);
 
   if (location) {
     const state = location.country_code === 'US' ? location.region_name : location.country_name;
@@ -205,10 +206,10 @@ function notifySlack(imageUrl, payload, location, action) {
     username: 'Plex',
     icon_emoji: ':plex:',
     attachments: [{
-      fallback: `${payload.Account.title} ${action} ${titleText}`,
+      fallback: `${payload.Account.title} ${action} ${titleText} - ${subtitleText}`,
       color: '#a67a2d',
-      title: formatTitle(payload.Metadata),
-      text: formatSubtitle(payload.Metadata),
+      title: titleText,
+      text: subtitleText,
       thumb_url: imageUrl,
       footer: `${action} ${footerText}`,
       footer_icon: payload.Account.thumb
