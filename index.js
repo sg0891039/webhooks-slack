@@ -44,6 +44,7 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
   const key = sha1(payload.Server.uuid + payload.Metadata.ratingKey);
 
   console.log('[What is event]', `it is  ${payload.event}`);
+  console.log('[What is account]', `it is  ${payload.Account.title}`);
   // missing required properties
   if (!payload.Metadata || !(isAudio || isVideo)) {
     return res.sendStatus(400);
@@ -85,7 +86,11 @@ app.post('/', upload.single('thumb'), async (req, res, next) => {
 
   // post to slack
   if ((payload.event === 'media.scrobble' && isVideo) || payload.event === 'media.rate' || payload.event === 'library.new') {
-    const location = await getLocation(payload.Player.publicAddress);
+    if (payload.event != 'library.new') {
+      const location = await getLocation(payload.Player.publicAddress);
+    } else {
+      const location = null;
+    }
     console.log('[SLACK]', `the event is ${payload.event}`);
     let action;
 
@@ -187,6 +192,8 @@ function notifySlack(imageUrl, payload, location, action) {
   if (location) {
     const state = location.country_code === 'US' ? location.region_name : location.country_name;
     locationText = `near ${location.city}, ${state}`;
+  } else {
+    locationText = payload.Server.title
   }
 
   slack.webhook({
@@ -194,7 +201,7 @@ function notifySlack(imageUrl, payload, location, action) {
     username: 'Plex',
     icon_emoji: ':plex:',
     attachments: [{
-      fallback: 'Required plain-text summary of the attachment.',
+      fallback: `${payload.Account.title} ${action}',
       color: '#a67a2d',
       title: formatTitle(payload.Metadata),
       text: formatSubtitle(payload.Metadata),
